@@ -21,9 +21,11 @@ malaria_project/
 │   ├── evaluate.py           ← metrics, confusion matrix, ROC
 │   ├── gradcam.py            ← Grad-CAM explainability
 │   ├── pipeline.py           ← full pipeline orchestrator
-│   └── app.py                ← Flask API
+│   └── app.py                ← Flask prediction API
 ├── train.py                  ← RUN THIS to train
-├── run_app.py                ← RUN THIS to start server
+├── run_app.py                ← RUN THIS to start the Flask API
+├── streamlit_app.py          ← Streamlit web UI (calls the Flask API)
+├── generate_results.py       ← produces evaluation plots
 ├── requirements.txt
 ├── .gitignore
 └── README.md
@@ -40,14 +42,17 @@ pip install -r requirements.txt
 # 3. Train the model
 python train.py
 
-# 4. Start the prediction server
+# 4. Start the prediction API (Flask, port 8080)
 python run_app.py
+
+# 5. In a second terminal, start the web UI
+streamlit run streamlit_app.py
 ```
 
 ## API Usage
 
 ```bash
-curl -X POST http://localhost:5000/predict \
+curl -X POST http://localhost:8080/predict \
   -F "file=@path/to/cell.png"
 ```
 
@@ -62,8 +67,11 @@ Expected output:
 }
 ```
 
-## Expected Results
-| Metric    | Expected  |
+## Target Results
+
+These are typical figures for CNNs on this dataset, not results measured in this repo. Run `python generate_results.py` after training to produce your own metrics.
+
+| Metric    | Target    |
 |-----------|-----------|
 | Accuracy  | ~95–97%   |
 | AUC-ROC   | ~98–99%   |
